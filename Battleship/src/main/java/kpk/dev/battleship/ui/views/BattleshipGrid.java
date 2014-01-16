@@ -45,10 +45,16 @@ public class BattleshipGrid extends RelativeLayout {
         super.onLayout(changed, l, t, r, b);
         int numRows = 0;
         int numCols = 0;
-        for(int i = 0; i < NUM_ROWS; i++) {
-            for(int j = 0; j < NUM_COLUMNS; j++) {
-                
+        int cellWidth = this.getWidth() / NUM_COLUMNS;
+        int cellHeight = this.getHeight() / NUM_ROWS;
+        for(int i = 0; i < mItems.size(); i++) {
+
+            int column = NUM_COLUMNS - (Math.abs((i + 1) - NUM_COLUMNS));
+            Log.d("Battleship", "COLUMN " + column);
+            if(column == NUM_COLUMNS){
+                column = 0;
             }
+
         }
     }
 }
