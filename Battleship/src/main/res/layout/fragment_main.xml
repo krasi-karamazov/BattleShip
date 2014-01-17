@@ -1,4 +1,12 @@
-<kpk.dev.battleship.ui.views.BattleshipGrid xmlns:android="http://schemas.android.com/apk/res/android"
+<kpk.dev.battleship.ui.views.GameArea xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+    <kpk.dev.battleship.ui.views.grid.BattleshipGrid xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/battleship_grid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:gravity="center"/>
+</kpk.dev.battleship.ui.views.GameArea>
