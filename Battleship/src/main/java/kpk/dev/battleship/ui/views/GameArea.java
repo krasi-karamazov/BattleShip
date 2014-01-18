@@ -16,7 +16,6 @@ import kpk.dev.battleship.ui.views.pieces.Ship;
  */
 public class GameArea extends RelativeLayout {
 
-    private int[] mLocation = new int[2];
     private float mOffsetX;
     private float mOffsetY;
     public GameArea(Context context) {
@@ -52,9 +51,13 @@ public class GameArea extends RelativeLayout {
                         break;
 
                     case MotionEvent.ACTION_MOVE:
+
                         float posX = params.leftMargin + (motionEvent.getX() - mOffsetX);
                         float posY = params.topMargin + (motionEvent.getY() - mOffsetY);
-                        params.topMargin = (int)posY;
+                        if(posY >= 0 && (posY + view.getMeasuredHeight() < getBottom())){
+                            params.topMargin = (int)posY;
+                        }
+
                         params.leftMargin = (int)posX;
                         view.setLayoutParams(params);
                         break;
