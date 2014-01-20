@@ -2,6 +2,7 @@ package kpk.dev.battleship.ui.views.grid;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -21,6 +22,7 @@ public class Square extends View {
     private Paint mFillPaint;
     private int mHorizPos;
     private int mVertPos;
+    private boolean mIsSelected;
 
     public Square(Context context) {
         super(context);
@@ -67,8 +69,26 @@ public class Square extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if(!mIsSelected){
+            mFillPaint.setColor(getContext().getResources().getColor(R.color.square_fill_color));
+            mStrokePaint.setColor(getContext().getResources().getColor(R.color.square_stroke_color));
+
+        }else{
+
+            mFillPaint.setColor(getContext().getResources().getColor(R.color.square_stroke_color));
+            mStrokePaint.setColor(getContext().getResources().getColor(R.color.square_fill_color));
+        }
+
         canvas.drawRect(new Rect(0, 0, this.getMeasuredWidth(), this.getMeasuredHeight()), mFillPaint);
         canvas.drawRect(new Rect(0, 0, this.getMeasuredWidth(), this.getMeasuredHeight()), mStrokePaint);
+    }
+
+    public void setIsSelected(boolean isSelected) {
+        mIsSelected = isSelected;
+    }
+
+    public boolean getIsSelected() {
+        return mIsSelected;
     }
 
     @Override

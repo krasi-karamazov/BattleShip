@@ -2,18 +2,25 @@ package kpk.dev.battleship.ui.views.grid;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.View;
 import android.widget.RelativeLayout;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import kpk.dev.battleship.ui.views.pieces.Ship;
 
 /**
  * Created by krasimir.karamazov on 1/16/14.
  */
 public class BattleshipGrid extends RelativeLayout {
-    private static final int NUM_COLUMNS = 11;
-    private static final int NUM_ROWS = 11;
-    private List<Square> mItems;
+    public static final int NUM_COLUMNS = 11;
+    public static final int NUM_ROWS = 11;
+    private List<LinkedList<Square>> mItems;
     private int mCellWidth;
+    private List<MarkedCell> mSelection;
 
     public BattleshipGrid(Context context) {
         super(context);
@@ -31,11 +38,16 @@ public class BattleshipGrid extends RelativeLayout {
     }
 
     private void init() {
-        mItems = new LinkedList<Square>();
-        for(int i = 0; i < NUM_COLUMNS * NUM_ROWS; i++) {
-            mItems.add(new Square(getContext()));
-            addView(mItems.get(i));
+        mItems = new LinkedList<LinkedList<Square>>();
+        for(int i = 0; i < NUM_COLUMNS ; i++) {
+            LinkedList<Square> row = new LinkedList<Square>();
+            for(int j = 0; j < NUM_ROWS; j++){
+                row.add(new Square(getContext()));
+                addView(row.get(j));
+            }
+            mItems.add(row);
         }
+        mSelection = new ArrayList<MarkedCell>();
     }
 
     public int getCellWidth() {
@@ -64,5 +76,42 @@ public class BattleshipGrid extends RelativeLayout {
                 row++;
             }
         }
+    }
+
+    public void repaintGrid(int column, int row, Ship.Orientation orientation, int numCells) {
+        clearSelection();
+        LinkedList<Square> rowList = mItems.get(row);
+
+        if(orientation.equals(Ship.Orientation.HORIZONTAL)){
+            for(int i = 0; i < numCells; i++) {
+                MarkedCell cell = new MarkedCell();
+                cell.column = column + (i + 1);
+                cell.row = row;
+                mSelection.add(cell);
+            }
+        }else{
+            for(int i = 0; i < numCells; i++) {
+                MarkedCell cell = new MarkedCell();
+                cell.column = column;
+                cell.row = row + (i + 1);
+                mSelection.add(cell);
+            }
+        }
+        rowList.get(column).setIsSelected(true);
+        rowList.get(column).invalidate();
+
+    }
+
+    private void clearSelection() {
+        for(int i = 0; i < mSelection.size(); i++) {
+            LinkedList<Square> rowList = mItems.get(mSelection.get(i).row);
+            rowList.get(mSelection.get(i).column).invalidate();
+            mSelection.clear();
+        }
+    }
+
+    private class MarkedCell{
+        int row;
+        int column;
     }
 }
