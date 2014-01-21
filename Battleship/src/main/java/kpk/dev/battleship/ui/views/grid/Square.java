@@ -23,6 +23,7 @@ public class Square extends View {
     private int mHorizPos;
     private int mVertPos;
     private boolean mIsSelected;
+    private boolean mBusy;
 
     public Square(Context context) {
         super(context);
@@ -72,9 +73,7 @@ public class Square extends View {
         if(!mIsSelected){
             mFillPaint.setColor(getContext().getResources().getColor(R.color.square_fill_color));
             mStrokePaint.setColor(getContext().getResources().getColor(R.color.square_stroke_color));
-
         }else{
-
             mFillPaint.setColor(getContext().getResources().getColor(R.color.square_stroke_color));
             mStrokePaint.setColor(getContext().getResources().getColor(R.color.square_fill_color));
         }
@@ -95,10 +94,18 @@ public class Square extends View {
     public boolean onTouchEvent(MotionEvent event) {
         switch(event.getAction()) {
             case MotionEvent.ACTION_UP:
-                Log.d(MainFragment.LOG_TAG, "Colummn" + this.getHorizPos() + ", Row:" + this.getVertPos());
+                Log.d(MainFragment.LOG_TAG, "Column" + this.getHorizPos() + ", Row:" + this.getVertPos());
                 break;
         }
 
         return true;
+    }
+
+    public boolean isBusy(){
+        return mBusy;
+    }
+
+    public void setIsBusy(boolean busy) {
+        this.mBusy = busy;
     }
 }
