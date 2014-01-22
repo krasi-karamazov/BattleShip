@@ -1,11 +1,7 @@
 package kpk.dev.battleship.grid;
 
-import android.util.Log;
-
 import java.util.LinkedList;
 import java.util.List;
-
-import kpk.dev.battleship.ui.views.grid.Square;
 import kpk.dev.battleship.ui.views.pieces.Ship;
 
 /**

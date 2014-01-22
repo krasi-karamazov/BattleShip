@@ -3,10 +3,8 @@ package kpk.dev.battleship.ui.views.grid;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
 import kpk.dev.battleship.grid.Cell;
 import kpk.dev.battleship.grid.GridData;
 import kpk.dev.battleship.ui.views.pieces.Ship;
@@ -42,7 +40,9 @@ public class BattleshipGrid extends RelativeLayout {
         for(int i = 0; i < GridData.NUM_COLUMNS ; i++) {
             LinkedList<Square> row = new LinkedList<Square>();
             for(int j = 0; j < GridData.NUM_ROWS; j++){
-                row.add(new Square(getContext()));
+                Square sq = new Square(getContext());
+                sq.setLayoutParams(new LayoutParams(mCellWidth, mCellWidth));
+                row.add(sq);
                 addView(row.get(j));
             }
             mItems.add(row);
@@ -70,7 +70,10 @@ public class BattleshipGrid extends RelativeLayout {
             Square sq = (Square)getChildAt(i - 1);
             sq.setHorizPos(((col == 0)?GridData.NUM_COLUMNS:col));
             sq.setVertPos(row);
-            sq.setLayoutParams(new LayoutParams(mCellWidth, mCellWidth));
+            LayoutParams params = (LayoutParams)sq.getLayoutParams();
+            params.width = mCellWidth;
+            params.height = mCellWidth;
+            sq.setLayoutParams(params);
             sq.layout(left, top, right, bottom);
             if(col == 0){
                 row++;

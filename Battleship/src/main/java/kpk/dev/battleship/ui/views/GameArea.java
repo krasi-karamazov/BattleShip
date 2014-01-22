@@ -9,7 +9,6 @@ import android.widget.RelativeLayout;
 import java.math.BigDecimal;
 import kpk.dev.battleship.R;
 import kpk.dev.battleship.grid.Cell;
-import kpk.dev.battleship.grid.GridData;
 import kpk.dev.battleship.ui.views.grid.BattleshipGrid;
 import kpk.dev.battleship.ui.views.pieces.Ship;
 

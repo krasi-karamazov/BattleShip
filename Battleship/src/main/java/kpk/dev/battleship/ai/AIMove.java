@@ -1,7 +1,6 @@
 package kpk.dev.battleship.ai;
 
 import kpk.dev.battleship.grid.Cell;
-import kpk.dev.battleship.utils.MarkedCell;
 
 /**
  * Created by krasimir.karamazov on 1/21/14.
