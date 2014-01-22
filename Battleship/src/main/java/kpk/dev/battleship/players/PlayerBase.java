@@ -15,8 +15,6 @@ public abstract class PlayerBase {
 
     public PlayerBase() {
         mPlayerFleet = ShipBuilder.buildFleet();
-    }
-    public void initGrid(){
         mGridData = new GridData();
     }
 

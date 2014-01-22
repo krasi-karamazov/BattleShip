@@ -11,6 +11,7 @@ import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 import java.math.BigDecimal;
 
+import kpk.dev.battleship.gamedata.GameData;
 import kpk.dev.battleship.players.AndroidPlayer;
 import kpk.dev.battleship.grid.Cell;
 import kpk.dev.battleship.ui.views.grid.BattleshipGrid;
@@ -61,11 +62,11 @@ public class GameArea extends RelativeLayout {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         if(changed){
-            final BattleshipGrid grid = new BattleshipGrid(getContext());
-            grid.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            //final BattleshipGrid grid = new BattleshipGrid(getContext(), );
+            /*grid.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
-
+                    init();
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
                         grid.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -77,8 +78,13 @@ public class GameArea extends RelativeLayout {
                     AndroidPlayer aiPlayer = new AndroidPlayer();
                     aiPlayer.startGame();
                 }
-            });
+            });*/
         }
+    }
+
+    private void init() {
+        int numGrids = GameData.getInstance().getPlayersNum();
+
     }
 
     private OnTouchListener getOnTouchListener() {
