@@ -13,38 +13,21 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import kpk.dev.battleship.ui.fragments.MainFragment;
+import kpk.dev.battleship.ui.views.pieces.builders.ShipBuilder;
 
 /**
  * Created by krasimir.karamazov on 1/17/14.
  */
 public class Ship extends View {
-
-    public enum Orientation{
-        VERTICAL, HORIZONTAL;
-    }
-    private Paint mShipPaint;
-    private int mNumSquares;
     private int mSquareWidth;
     private int mPosition;
-    private String mName;
-    private Orientation mOrientation;
+    private Paint mShipPaint;
     private int mColor;
-    private boolean mMoving;
-    private int offsetX = 0;
-    private int offsetY = 0;
-    private int[] mLocation = new int[2];
-    public Ship(Context context) {
+    private ShipData mData;
+
+    public Ship(Context context, ShipData data) {
         super(context);
-        init();
-    }
-
-    public Ship(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
-
-    public Ship(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+        data = mData;
         init();
     }
 
@@ -62,22 +45,6 @@ public class Ship extends View {
         this.mColor = mColor;
     }
 
-    public String getName() {
-        return mName;
-    }
-
-    public void setName(String mName) {
-        this.mName = mName;
-    }
-
-    public int getNumSquares() {
-        return mNumSquares;
-    }
-
-    public void setNumSquares(int mNumSquares) {
-        this.mNumSquares = mNumSquares;
-    }
-
     public int getSquareWidth() {
         return mSquareWidth;
     }
@@ -86,31 +53,29 @@ public class Ship extends View {
         this.mSquareWidth = mSquareWidth;
     }
 
-    public int getPosition() {
-        return mPosition;
+    public String getName() {
+        return mData.getName();
     }
 
-    public void setPosition(int mPosition) {
-        this.mPosition = mPosition;
+    public int getNumSquares() {
+        return mData.getNumSquares();
     }
 
-    public Orientation getOrientation() {
-        return mOrientation;
+    public ShipBuilder.Orientation getOrientation() {
+        return mData.getOrientation();
     }
 
-    public void setOrientation(Orientation mOrientation) {
-        this.mOrientation = mOrientation;
-    }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         int width = getMeasuredWidth();
-        if(mOrientation.equals(Orientation.HORIZONTAL)){
-            canvas.drawRect(new Rect(0, 0, width * mNumSquares, width), mShipPaint);
+        if(mData.getOrientation().equals(ShipBuilder.Orientation.HORIZONTAL)){
+            canvas.drawRect(new Rect(0, 0, width * mData.getNumSquares(), width), mShipPaint);
         }else{
-            canvas.drawRect(new Rect(0, 0, width, width * mNumSquares), mShipPaint);
+            canvas.drawRect(new Rect(0, 0, width, width * mData.getNumSquares()), mShipPaint);
         }
     }
 
@@ -119,12 +84,12 @@ public class Ship extends View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int width;
         int height;
-        if(mOrientation.equals(Orientation.HORIZONTAL)){
-            width = mSquareWidth * mNumSquares;
+        if(mData.getOrientation().equals(ShipBuilder.Orientation.HORIZONTAL)){
+            width = mSquareWidth * mData.getNumSquares();
             height = mSquareWidth;
         }else{
             width = mSquareWidth;
-            height = mSquareWidth* mNumSquares;
+            height = mSquareWidth * mData.getNumSquares();
         }
         setMeasuredDimension(width, height);
     }

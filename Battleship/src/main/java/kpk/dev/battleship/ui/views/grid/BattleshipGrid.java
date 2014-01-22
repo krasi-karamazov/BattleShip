@@ -8,6 +8,7 @@ import java.util.List;
 import kpk.dev.battleship.grid.Cell;
 import kpk.dev.battleship.grid.GridData;
 import kpk.dev.battleship.ui.views.pieces.Ship;
+import kpk.dev.battleship.ui.views.pieces.builders.ShipBuilder;
 import kpk.dev.battleship.utils.MarkedCell;
 
 /**
@@ -20,23 +21,13 @@ public class BattleshipGrid extends RelativeLayout {
     private List<MarkedCell> mSelection;
     private GridData mData;
 
-    public BattleshipGrid(Context context) {
+    public BattleshipGrid(Context context, GridData data) {
         super(context);
-        init();
+        initGrid(data);
     }
 
-    public BattleshipGrid(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
-
-    public BattleshipGrid(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        init();
-    }
-
-    private void init() {
-        mData = new GridData();
+    public void initGrid(GridData data) {
+        mData = data;
         for(int i = 0; i < GridData.NUM_COLUMNS ; i++) {
             LinkedList<Square> row = new LinkedList<Square>();
             for(int j = 0; j < GridData.NUM_ROWS; j++){
@@ -81,7 +72,7 @@ public class BattleshipGrid extends RelativeLayout {
         }
     }
 
-    public void repaintGrid(int column, int row, Ship.Orientation orientation, int numCells) {
+    public void repaintGrid(int column, int row, ShipBuilder.Orientation orientation, int numCells) {
         if(row >= mItems.size() || column >= mItems.size()) {
             return;
         }
@@ -89,7 +80,7 @@ public class BattleshipGrid extends RelativeLayout {
 
         for(int i = 0; i < numCells; i++) {
             MarkedCell cell = new MarkedCell();
-            if(orientation.equals(Ship.Orientation.HORIZONTAL)){
+            if(orientation.equals(ShipBuilder.Orientation.HORIZONTAL)){
                 cell.setColumn(column + i);
                 cell.setRow(row);
             }else{
@@ -106,8 +97,9 @@ public class BattleshipGrid extends RelativeLayout {
         return mData.getCell(mSelection.get(0).getColumn(), mSelection.get(0).getRow());
     }
 
-    public void occupyCells(int row, int columnn, int numCells, Ship.Orientation orientation) {
-        mData.occupyCells(row, columnn, numCells, orientation);
+    public boolean occupyCells(int row, int column, int numCells, ShipBuilder.Orientation orientation) {
+        setSelection(false);
+        return mData.occupyCells(row, column, numCells, orientation);
     }
 
     private void setSelection(boolean select) {

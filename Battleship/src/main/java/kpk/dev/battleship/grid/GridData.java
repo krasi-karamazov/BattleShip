@@ -2,7 +2,10 @@ package kpk.dev.battleship.grid;
 
 import java.util.LinkedList;
 import java.util.List;
-import kpk.dev.battleship.ui.views.pieces.Ship;
+import java.util.Map;
+
+import kpk.dev.battleship.ui.views.pieces.ShipData;
+import kpk.dev.battleship.ui.views.pieces.builders.ShipBuilder;
 
 /**
  * Created by krasimir.karamazov on 1/21/14.
@@ -14,6 +17,12 @@ public class GridData {
 
     public GridData() {
         initGrid();
+    }
+
+    public static GridData generate(Map<String, ShipData> fleet) {
+        GridData gridData = new GridData();
+
+        return gridData;
     }
 
     private void initGrid() {
@@ -41,10 +50,20 @@ public class GridData {
         return mGridData.get(row).get(column);
     }
 
-    public void occupyCells(int row, int column, int numCells, Ship.Orientation orientation) {
+    public boolean occupyCells(int row, int column, int numCells, ShipBuilder.Orientation orientation){
+        if(orientation.equals(ShipBuilder.Orientation.HORIZONTAL)){
+            if(column + numCells > NUM_COLUMNS){
+                return false;
+            }
+        }else{
+            if(row + numCells > NUM_ROWS){
+                return false;
+            }
+        }
+
         for(int i = 0; i < numCells; i++) {
             Cell cellToSelect;
-            if(orientation.equals(Ship.Orientation.HORIZONTAL)) {
+            if(orientation.equals(ShipBuilder.Orientation.HORIZONTAL)) {
                 cellToSelect = mGridData.get(row).get(column + i);
             }else{
                 cellToSelect = mGridData.get(row + i).get(column);
@@ -53,6 +72,7 @@ public class GridData {
                 }
             }
         }
+        return true;
     }
 
 }

@@ -1,13 +1,17 @@
 package kpk.dev.battleship.ui.views;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 import java.math.BigDecimal;
-import kpk.dev.battleship.R;
+
+import kpk.dev.battleship.players.AndroidPlayer;
 import kpk.dev.battleship.grid.Cell;
 import kpk.dev.battleship.ui.views.grid.BattleshipGrid;
 import kpk.dev.battleship.ui.views.pieces.Ship;
@@ -24,6 +28,7 @@ public class GameArea extends RelativeLayout {
     private Rect mViewBounds;
     private int mCellWidth;
     private Ship mShip;
+    private Point mPickupPoint;
     public GameArea(Context context) {
         super(context);
     }
@@ -37,16 +42,43 @@ public class GameArea extends RelativeLayout {
     }
 
     public void startAddingPieces(int cellWidth) {
-        mGrid = (BattleshipGrid)findViewById(R.id.battleship_grid);
-        mShip = new Ship(getContext());
+        mPickupPoint = new Point();
+
+
+        /*mShip = new Ship(getContext());
         mShip.setNumSquares(5);
         mShip.setSquareWidth(cellWidth);
         mShip.setOrientation(Ship.Orientation.VERTICAL);
         addView(mShip);
-        mShip.setOnTouchListener(getOnTouchListener());
+        mShip.setOnTouchListener(getOnTouchListener());*/
+
         mGridBounds = new Rect(mGrid.getLeft(), mGrid.getTop(), cellWidth * 11, cellWidth * 11);
         mViewBounds = new Rect();
         mCellWidth = cellWidth;
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        if(changed){
+            final BattleshipGrid grid = new BattleshipGrid(getContext());
+            grid.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
+                        grid.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }else{
+                        grid.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                    mCellWidth = grid.getCellWidth();
+                    startAddingPieces(mCellWidth);
+                    AndroidPlayer aiPlayer = new AndroidPlayer();
+                    aiPlayer.startGame();
+                }
+            });
+        }
     }
 
     private OnTouchListener getOnTouchListener() {
@@ -56,6 +88,8 @@ public class GameArea extends RelativeLayout {
                 RelativeLayout.LayoutParams params = (LayoutParams)view.getLayoutParams();
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        mPickupPoint.x = params.leftMargin;
+                        mPickupPoint.y = params.topMargin;
                         mOffsetX =  motionEvent.getX();
                         mOffsetY =  motionEvent.getY();
                         break;
@@ -86,11 +120,16 @@ public class GameArea extends RelativeLayout {
     }
 
     private void dropPiece(Cell cell) {
+        boolean canOccupy =  mGrid.occupyCells(cell.getRow() - 1, cell.getColumn() - 1, mShip.getNumSquares(), mShip.getOrientation());
         RelativeLayout.LayoutParams params = (LayoutParams)mShip.getLayoutParams();
-        params.leftMargin = (cell.getColumn() - 1) * mCellWidth;
-        params.topMargin = (cell.getRow() - 1) * mCellWidth;
+        if(canOccupy) {
+            params.leftMargin = (cell.getColumn() - 1) * mCellWidth;
+            params.topMargin = (cell.getRow() - 1) * mCellWidth;
+        }else{
+            params.leftMargin = mPickupPoint.x;
+            params.topMargin = mPickupPoint.y;
+        }
         mShip.setLayoutParams(params);
-        mGrid.occupyCells(cell.getRow() - 1, cell.getColumn() - 1, mShip.getNumSquares(), mShip.getOrientation());
     }
 
     private void getClosestColumn(View view) {
