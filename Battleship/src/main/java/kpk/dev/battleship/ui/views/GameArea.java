@@ -5,11 +5,14 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import kpk.dev.battleship.gamedata.GameData;
 import kpk.dev.battleship.players.AndroidPlayer;
@@ -30,8 +33,11 @@ public class GameArea extends RelativeLayout {
     private int mCellWidth;
     private Ship mShip;
     private Point mPickupPoint;
+    private int mPlayers;
+    private List<BattleshipGrid> mGrids;
     public GameArea(Context context) {
         super(context);
+        init();
     }
 
     public GameArea(Context context, AttributeSet attrs) {
@@ -62,29 +68,39 @@ public class GameArea extends RelativeLayout {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         if(changed){
-            //final BattleshipGrid grid = new BattleshipGrid(getContext(), );
-            /*grid.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    init();
+            if(mPlayers <=0)
+                return;
 
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
-                        grid.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    }else{
-                        grid.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    }
-                    mCellWidth = grid.getCellWidth();
-                    startAddingPieces(mCellWidth);
-                    AndroidPlayer aiPlayer = new AndroidPlayer();
-                    aiPlayer.startGame();
-                }
-            });*/
+            double width = r / ((double)mPlayers + .4);
+
+
+            double gridWidth = width;
+            for(int i = 0 ; i < mGrids.size(); i++) {
+                RelativeLayout.LayoutParams params = (LayoutParams)mGrids.get(i).getLayoutParams();
+                params.width = (int)gridWidth;
+                params.height = (int)gridWidth;
+                params.leftMargin = i * ((int)gridWidth + 1);
+                params.addRule(RelativeLayout.CENTER_VERTICAL);
+                mGrids.get(i).setLayoutParams(params);
+                mGrids.get(i).requestLayout();
+            }
+            RelativeLayout.LayoutParams paramsLast = (RelativeLayout.LayoutParams)mGrids.get(mGrids.size() - 1).getLayoutParams();
+            paramsLast.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            paramsLast.rightMargin = ()
+            mGrids.get(mGrids.size() - 1).setLayoutParams(paramsLast);
         }
     }
 
-    private void init() {
-        int numGrids = GameData.getInstance().getPlayersNum();
+    public void init() {
+        mGrids = new ArrayList<BattleshipGrid>();
 
+        mPlayers = GameData.getInstance().getPlayersNum();
+        for(int i = 0; i < mPlayers; i++) {
+            BattleshipGrid grid = new BattleshipGrid(getContext(), GameData.getInstance().getPlayers().get(i).getGridData());
+            addView(grid);
+            mGrids.add(grid);
+        }
+        requestLayout();
     }
 
     private OnTouchListener getOnTouchListener() {

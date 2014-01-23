@@ -48,9 +48,10 @@ public class BattleshipGrid extends RelativeLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        int biggerSide = (getHeight() > getWidth())?getHeight():getWidth();
-        mCellWidth = ((biggerSide / 2)/ GridData.NUM_COLUMNS);
 
+        //int biggerSide = (getHeight() > getWidth())?getHeight():getWidth();
+        //mCellWidth = ((biggerSide / 2)/ GridData.NUM_COLUMNS);
+        mCellWidth = getWidth() / GridData.NUM_COLUMNS;
         int row = 1;
         for(int i = 1; i <= this.getChildCount(); i++) {
             int col = (i + GridData.NUM_COLUMNS) % GridData.NUM_COLUMNS;
@@ -70,6 +71,8 @@ public class BattleshipGrid extends RelativeLayout {
                 row++;
             }
         }
+
+
     }
 
     public void repaintGrid(int column, int row, ShipBuilder.Orientation orientation, int numCells) {

@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import kpk.dev.battleship.R;
+import kpk.dev.battleship.gamedata.GameData;
+import kpk.dev.battleship.players.AndroidPlayer;
 import kpk.dev.battleship.ui.views.GameArea;
 
 /**
@@ -20,7 +22,17 @@ public class MainFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         final GameArea gameArea = (GameArea)rootView;
-
+        gameArea.init();
         return rootView;
+    }
+
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        GameData.getInstance().addPlayer(new AndroidPlayer());
+        GameData.getInstance().addPlayer(new AndroidPlayer());
+        setRetainInstance(true);
     }
 }
