@@ -42,8 +42,9 @@ public class ShipBuilder {
     public static Map<String, ShipData> buildFleet() {
         final ShipType[] types = ShipType.values();
         final Map<String, ShipData> fleet = new TreeMap<String, ShipData>();
+        Random rand = new Random(System.currentTimeMillis());
         for(ShipType type : types) {
-            int orientation=(Math.random()<0.5)?0:1;
+            int orientation=rand.nextInt(2);
             fleet.put(type.getShipName(), build(type, (orientation == 0)?Orientation.HORIZONTAL:Orientation.VERTICAL));
         }
         return fleet;

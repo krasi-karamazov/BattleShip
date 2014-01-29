@@ -1,7 +1,9 @@
 package kpk.dev.battleship.players;
 
 import java.util.Map;
+import java.util.Random;
 
+import kpk.dev.battleship.grid.Cell;
 import kpk.dev.battleship.grid.GridData;
 import kpk.dev.battleship.ui.views.pieces.ShipData;
 import kpk.dev.battleship.ui.views.pieces.builders.ShipBuilder;
@@ -18,16 +20,21 @@ public abstract class PlayerBase {
         mGridData = new GridData();
     }
 
-    public GridData getGridData() {
+    public final GridData getGridData() {
         return mGridData;
     }
 
     public abstract void startGame();
 
     public void autoArrageFleet() {
-        //TODO autoarrange
+
     }
 
-    public abstract void performMove();
+    protected boolean canMove(int column, int row){
+        Cell cell = getGridData().getCell(column, row);
+        return !cell.isSelected();
+    }
+
+    public abstract void performMove(int column ,int row);
 
 }

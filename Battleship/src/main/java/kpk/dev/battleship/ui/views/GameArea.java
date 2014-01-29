@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kpk.dev.battleship.gamedata.GameData;
+import kpk.dev.battleship.grid.GridData;
 import kpk.dev.battleship.players.AndroidPlayer;
 import kpk.dev.battleship.grid.Cell;
 import kpk.dev.battleship.ui.views.grid.BattleshipGrid;
@@ -42,11 +43,15 @@ public class GameArea extends RelativeLayout {
 
     public GameArea(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public GameArea(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
     }
+
+
 
     public void startAddingPieces(int cellWidth) {
         mPickupPoint = new Point();
@@ -68,14 +73,13 @@ public class GameArea extends RelativeLayout {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         if(changed){
-            if(mPlayers <=0)
+            if(mGrids.size() <= 0)
                 return;
 
-            double width = r / ((double)mPlayers + .4);
-
+            double width = r / ((double)2 + .4);
 
             double gridWidth = width;
-            for(int i = 0 ; i < mGrids.size(); i++) {
+            for(int i = 0 ; i < GameData.getInstance().getPlayersNum(); i++) {
                 RelativeLayout.LayoutParams params = (LayoutParams)mGrids.get(i).getLayoutParams();
                 params.width = (int)gridWidth;
                 params.height = (int)gridWidth;
@@ -86,21 +90,20 @@ public class GameArea extends RelativeLayout {
             }
             RelativeLayout.LayoutParams paramsLast = (RelativeLayout.LayoutParams)mGrids.get(mGrids.size() - 1).getLayoutParams();
             paramsLast.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            paramsLast.rightMargin = ()
             mGrids.get(mGrids.size() - 1).setLayoutParams(paramsLast);
         }
     }
 
-    public void init() {
+    private void init() {
         mGrids = new ArrayList<BattleshipGrid>();
 
-        mPlayers = GameData.getInstance().getPlayersNum();
-        for(int i = 0; i < mPlayers; i++) {
-            BattleshipGrid grid = new BattleshipGrid(getContext(), GameData.getInstance().getPlayers().get(i).getGridData());
+        for(int i = 0; i < 2; i++) {
+            GridData data = GameData.getInstance().getPlayers().get(i).getGridData();
+            BattleshipGrid grid = new BattleshipGrid(getContext(), data);
+            data.addObserver(grid);
             addView(grid);
             mGrids.add(grid);
         }
-        requestLayout();
     }
 
     private OnTouchListener getOnTouchListener() {

@@ -1,8 +1,15 @@
 package kpk.dev.battleship.grid;
 
+import android.util.Log;
+
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Random;
+import java.util.concurrent.locks.ReentrantLock;
 
 import kpk.dev.battleship.ui.views.pieces.ShipData;
 import kpk.dev.battleship.ui.views.pieces.builders.ShipBuilder;
@@ -14,14 +21,31 @@ public class GridData {
     public static final int NUM_COLUMNS = 11;
     public static final int NUM_ROWS = 11;
     final public List<LinkedList<Cell>> mGridData = new LinkedList<LinkedList<Cell>>();
-
+    private GridObserver mObserver;
+    private ReentrantLock lock;
+    private Random mRand;
     public GridData() {
         initGrid();
+        mRand = new Random(System.currentTimeMillis() + (long)Math.random());
+    }
+
+
+    public void addObserver(GridObserver observer) {
+        mObserver = observer;
+    }
+
+    public void notifyObservers(int row, int column) {
+        mObserver.gridChanged(row, column);
     }
 
     public static GridData generate(Map<String, ShipData> fleet) {
         GridData gridData = new GridData();
-
+        Iterator<Map.Entry<String, ShipData>> iterator = fleet.entrySet().iterator();
+        Log.d("Battleship", "ORIENTATION 45");
+        while(iterator.hasNext()) {
+            Map.Entry<String, ShipData> entry = iterator.next();
+            Log.d("Battleship", "ORIENTATION" + entry.getValue().getOrientation());
+        }
         return gridData;
     }
 
@@ -38,12 +62,26 @@ public class GridData {
         }
     }
 
-    public void occupyCell(int column, int row) {
-        mGridData.get(row).get(column).setOccupied(true);
+    public boolean occupyCell(int column, int row) {
+        Cell cell = mGridData.get(row).get(column);
+        if(cell.isOccupied()) {
+            return false;
+        }else {
+            cell.setOccupied(true);
+            return true;
+        }
     }
 
-    public void selectCell(int column, int row) {
-        mGridData.get(row).get(column).setSelected(true);
+    public boolean selectCell(int column, int row) {
+
+        Cell cell = mGridData.get(row).get(column);
+        if(cell.isSelected()) {
+            return false;
+        }else {
+            cell.setSelected(true);
+            notifyObservers(column, row);
+            return true;
+        }
     }
 
     public Cell getCell(int column, int row) {
@@ -61,15 +99,19 @@ public class GridData {
             }
         }
 
-        for(int i = 0; i < numCells; i++) {
+        for(int i = column; i < NUM_COLUMNS; i++) {
             Cell cellToSelect;
             if(orientation.equals(ShipBuilder.Orientation.HORIZONTAL)) {
                 cellToSelect = mGridData.get(row).get(column + i);
             }else{
                 cellToSelect = mGridData.get(row + i).get(column);
-                if(cellToSelect != null){
-                    cellToSelect.setOccupied(true);
-                }
+            }
+            if(cellToSelect.isOccupied()) {
+                mGridData.clear();
+                occupyCells(mRand.nextInt(NUM_COLUMNS), mRand.nextInt(NUM_COLUMNS), numCells, orientation);
+                break;
+            }else{
+                cellToSelect.setOccupied(true);
             }
         }
         return true;

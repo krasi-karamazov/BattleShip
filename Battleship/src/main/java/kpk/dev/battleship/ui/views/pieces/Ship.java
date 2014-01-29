@@ -65,8 +65,6 @@ public class Ship extends View {
         return mData.getOrientation();
     }
 
-
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
