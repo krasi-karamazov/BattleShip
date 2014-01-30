@@ -39,6 +39,9 @@ public class BattleshipGrid extends RelativeLayout implements GridObserver
             LinkedList<Square> row = new LinkedList<Square>();
             for(int j = 0; j < GridData.NUM_ROWS; j++){
                 Square sq = new Square(getContext());
+                if(mData.getCell(j, i).isOccupied()){
+                    sq.setIsSelected(true);
+                }
                 sq.setLayoutParams(new LayoutParams(mCellWidth, mCellWidth));
                 row.add(sq);
                 addView(row.get(j));
@@ -68,6 +71,7 @@ public class BattleshipGrid extends RelativeLayout implements GridObserver
             int right = left + mCellWidth;
             int top = (row - 1) * mCellWidth;
             int bottom = top + mCellWidth;
+
             Square sq = (Square)getChildAt(i - 1);
             sq.setHorizPos(((col == 0)?GridData.NUM_COLUMNS:col));
             sq.setVertPos(row);

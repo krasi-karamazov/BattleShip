@@ -3,6 +3,7 @@ package kpk.dev.battleship.players;
 
 import java.util.Random;
 import kpk.dev.battleship.gamedata.GameData;
+import kpk.dev.battleship.grid.GridData;
 
 /**
  * Created by krasimir.karamazov on 1/22/14.

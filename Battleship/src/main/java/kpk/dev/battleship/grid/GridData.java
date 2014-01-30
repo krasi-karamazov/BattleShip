@@ -23,10 +23,10 @@ public class GridData {
     final public List<LinkedList<Cell>> mGridData = new LinkedList<LinkedList<Cell>>();
     private GridObserver mObserver;
     private ReentrantLock lock;
-    private Random mRand;
+    private static Random mRand = new Random(System.currentTimeMillis() + (long)Math.random());;
     public GridData() {
         initGrid();
-        mRand = new Random(System.currentTimeMillis() + (long)Math.random());
+
     }
 
 
@@ -41,10 +41,13 @@ public class GridData {
     public static GridData generate(Map<String, ShipData> fleet) {
         GridData gridData = new GridData();
         Iterator<Map.Entry<String, ShipData>> iterator = fleet.entrySet().iterator();
-        Log.d("Battleship", "ORIENTATION 45");
+
         while(iterator.hasNext()) {
             Map.Entry<String, ShipData> entry = iterator.next();
-            Log.d("Battleship", "ORIENTATION" + entry.getValue().getOrientation());
+            while(!gridData.occupyCells(mRand.nextInt(NUM_COLUMNS), mRand.nextInt(NUM_COLUMNS), entry.getValue().getNumSquares(), entry.getValue().getOrientation())) {
+                gridData.occupyCells(mRand.nextInt(NUM_COLUMNS), mRand.nextInt(NUM_COLUMNS), entry.getValue().getNumSquares(), entry.getValue().getOrientation());
+            }
+
         }
         return gridData;
     }
@@ -89,29 +92,46 @@ public class GridData {
     }
 
     public boolean occupyCells(int row, int column, int numCells, ShipBuilder.Orientation orientation){
+
+        if(canOccupy(row, column, numCells, orientation)) {
+
+        }else{
+            return false;
+        }
+        /*Log.d("Battleship", "start: " + (start));
+        Log.d("Battleship", "end: " + (end));
+        Log.d("Battleship", "total: " + (start + numCells));*/
+
+        return true;
+    }
+
+    private boolean canOccupy(int row, int column, int numCells, ShipBuilder.Orientation orientation){
+        int start = 0;
+        int end = 0;
         if(orientation.equals(ShipBuilder.Orientation.HORIZONTAL)){
-            if(column + numCells > NUM_COLUMNS){
+            start = column;
+            end = start + numCells;
+            if(end >= NUM_COLUMNS){
                 return false;
             }
+
         }else{
-            if(row + numCells > NUM_ROWS){
+            start = row;
+            end = start + numCells;
+            if(end >= NUM_ROWS){
                 return false;
             }
         }
 
-        for(int i = column; i < NUM_COLUMNS; i++) {
+        for(int i = start; i < start + numCells; i++) {
             Cell cellToSelect;
             if(orientation.equals(ShipBuilder.Orientation.HORIZONTAL)) {
-                cellToSelect = mGridData.get(row).get(column + i);
+                cellToSelect = mGridData.get(row).get(i);
             }else{
-                cellToSelect = mGridData.get(row + i).get(column);
+                cellToSelect = mGridData.get(i).get(column);
             }
             if(cellToSelect.isOccupied()) {
-                mGridData.clear();
-                occupyCells(mRand.nextInt(NUM_COLUMNS), mRand.nextInt(NUM_COLUMNS), numCells, orientation);
-                break;
-            }else{
-                cellToSelect.setOccupied(true);
+                return false;
             }
         }
         return true;

@@ -34,8 +34,10 @@ public class GameData {
     }
 
     public void addPlayer(PlayerBase player) {
+        GridData data = GridData.generate(ShipBuilder.buildFleet());
+        player.setGridData(data);
         mPlayers.add(player);
-        mGrids.add(GridData.generate(ShipBuilder.buildFleet()));
+        mGrids.add(data);
     }
 
     public void performMove(int column ,int row, GridData gridData) {

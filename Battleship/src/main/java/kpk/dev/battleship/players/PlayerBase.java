@@ -24,14 +24,18 @@ public abstract class PlayerBase {
         return mGridData;
     }
 
+    public final void setGridData(GridData data) {
+        mGridData = data;
+    }
+
     public abstract void startGame();
 
     public void autoArrageFleet() {
 
     }
 
-    protected boolean canMove(int column, int row){
-        Cell cell = getGridData().getCell(column, row);
+    protected final boolean canMove(int column, int row){
+        Cell cell = mGridData.getCell(column, row);
         return !cell.isSelected();
     }
 
