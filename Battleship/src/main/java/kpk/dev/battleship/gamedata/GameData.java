@@ -41,14 +41,7 @@ public class GameData {
     }
 
     public void performMove(int column ,int row, GridData gridData) {
-        lock.lock();
-        gridData.selectCell(column, row);
-        Log.d("Battleship", Thread.currentThread().getName() + " Selected column:" + column + " row:" + row);
-        long currentTime = System.currentTimeMillis();
-        while((System.currentTimeMillis() - currentTime) < 2000) {
 
-        }
-        lock.unlock();
     }
 
     public List<PlayerBase> getPlayers(){

@@ -1,45 +1,54 @@
 package kpk.dev.battleship.ui.activities;
 
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.Stack;
+
 import kpk.dev.battleship.R;
+import kpk.dev.battleship.commands.Receiver;
+import kpk.dev.battleship.states.BaseState;
+import kpk.dev.battleship.states.IntroState;
 import kpk.dev.battleship.ui.fragments.MainFragment;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements Receiver {
+
+    private BaseState mState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new MainFragment())
-                    .commit();
-        }
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+        displayState(new IntroState(this));
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+    public void onBackPressed() {
+        if(mState == null || mState.getPrevState() == null) {
+            super.onBackPressed();
+        }else{
+            displayState(mState.getPrevState());
         }
-        return super.onOptionsItemSelected(item);
+    }
+
+    private void displayState(BaseState state) {
+
+        final Fragment fr = state.getFragment();
+        if(fr != null){
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, fr, state.getFragmentTag()).commit();
+        }
+        if(mState != null){
+            state.setPrevState(mState);
+        }
+        mState = state;
+    }
+
+    @Override
+    public void changeState(BaseState state) {
+        displayState(state);
     }
 }
