@@ -11,12 +11,12 @@ import kpk.dev.battleship.ui.fragments.IntroFragment;
  */
 public class IntroState extends BaseState {
 
-    public IntroState(Receiver receiver) {
-        super(receiver);
+    public IntroState(Receiver receiver, Bundle args) {
+        super(receiver, args);
     }
 
-    public IntroState() {
-        super();
+    public IntroState(Bundle args) {
+        super(args);
     }
 
     @Override
@@ -26,8 +26,7 @@ public class IntroState extends BaseState {
 
     @Override
     public BaseFragment getConcreteFragment() {
-        final BaseFragment fragment = IntroFragment.getInstance(new Bundle());
-        return fragment;
+        return new IntroFragment();
     }
 
 }

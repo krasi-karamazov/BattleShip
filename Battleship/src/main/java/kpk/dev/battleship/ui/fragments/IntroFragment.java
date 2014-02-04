@@ -12,19 +12,13 @@ import kpk.dev.battleship.states.MenuState;
  */
 public class IntroFragment extends BaseFragment {
 
-    public static final BaseFragment getInstance(Bundle args) {
-        BaseFragment fragment = new IntroFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     protected void initUI(View rootView) {
         Button btn = (Button)rootView.findViewById(R.id.btn_menu);
         btn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                getState().gotoState(new MenuState());
+                gotoState(new MenuState(null));
             }
         });
     }

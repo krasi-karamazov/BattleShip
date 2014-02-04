@@ -2,10 +2,7 @@ package kpk.dev.battleship.ui.fragments;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 import kpk.dev.battleship.R;
@@ -14,17 +11,19 @@ import kpk.dev.battleship.players.AndroidPlayer;
 import kpk.dev.battleship.ui.views.GameArea;
 
 /**
- * Created by krasimir.karamazov on 1/16/14.
+ * Created by krasimir.karamazov on 2/4/14.
  */
-public class MainFragment extends Fragment {
-    public static final String LOG_TAG = "Battleship";
-    private int mCellWidth;
+public class PrepareBoardFragment extends BaseFragment {
+
+    public static BaseFragment getInstance(Bundle args) {
+        BaseFragment fragment = new PrepareBoardFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        GameData.getInstance().addPlayer(new AndroidPlayer("Player_1"));
-        GameData.getInstance().addPlayer(new AndroidPlayer("player_2"));
-        View rootView = inflater.inflate(R.layout.fragment_prepare_board, container, false);
+    protected void initUI(View rootView) {
+
         final GameArea gameArea = (GameArea)rootView;
         gameArea.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -37,15 +36,10 @@ public class MainFragment extends Fragment {
                 }
             }
         });
-        return rootView;
     }
 
-
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setRetainInstance(true);
+    protected int getLayoutId() {
+        return R.layout.fragment_prepare_board;
     }
 }

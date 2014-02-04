@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import kpk.dev.battleship.states.BaseState;
+import kpk.dev.battleship.states.MenuState;
 
 /**
  * Created by krasimir.karamazov on 2/3/14.
@@ -31,4 +32,8 @@ public abstract class BaseFragment extends Fragment{
     protected abstract void initUI(View rootView);
 
     protected abstract int getLayoutId();
+
+    protected final void gotoState(BaseState state) {
+        mState.gotoState(state);
+    }
 }

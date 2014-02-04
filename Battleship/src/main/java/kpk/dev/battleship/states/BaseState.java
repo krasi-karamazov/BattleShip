@@ -1,5 +1,7 @@
 package kpk.dev.battleship.states;
 
+import android.os.Bundle;
+
 import kpk.dev.battleship.commands.Receiver;
 import kpk.dev.battleship.ui.fragments.BaseFragment;
 
@@ -9,12 +11,14 @@ import kpk.dev.battleship.ui.fragments.BaseFragment;
 public abstract class BaseState {
     private BaseState mPrevState;
     private Receiver mReceiver;
-    public BaseState(Receiver receiver) {
+    private Bundle mArgs;
+    public BaseState(Receiver receiver, Bundle args) {
+        this(args);
         mReceiver = receiver;
     }
 
-    public BaseState() {
-
+    public BaseState(Bundle args) {
+        mArgs = args;
     }
 
     public void setPrevState(BaseState prevState) {
@@ -28,15 +32,15 @@ public abstract class BaseState {
     protected final void setReceiver(Receiver receiver){
         mReceiver = receiver;
     }
-
-    public final BaseFragment getFragment(){
-        BaseFragment fragment = getConcreteFragment();
-        fragment.setState(this);
-        return fragment;
+    protected final Bundle getArgs() {
+        return mArgs;
     }
 
-    public final String getFragmentTag() {
-        return getClass().getSimpleName();
+    public final BaseFragment getFragment(){
+        final BaseFragment fragment = getConcreteFragment();
+        fragment.setState(this);
+        fragment.setArguments(mArgs);
+        return fragment;
     }
 
     protected abstract BaseFragment getConcreteFragment();

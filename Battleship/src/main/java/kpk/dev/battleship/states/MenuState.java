@@ -1,5 +1,6 @@
 package kpk.dev.battleship.states;
 
+import android.os.Bundle;
 import kpk.dev.battleship.commands.Receiver;
 import kpk.dev.battleship.ui.fragments.BaseFragment;
 import kpk.dev.battleship.ui.fragments.MenuFragment;
@@ -9,11 +10,12 @@ import kpk.dev.battleship.ui.fragments.MenuFragment;
  */
 public class MenuState extends BaseState {
 
-    public MenuState(Receiver receiver) {
-        super(receiver);
+    public MenuState(Receiver receiver, Bundle args) {
+        super(receiver, args);
     }
 
-    public MenuState() {
+    public MenuState(Bundle args) {
+        super(args);
     }
 
     @Override

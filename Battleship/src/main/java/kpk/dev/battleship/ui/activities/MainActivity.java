@@ -1,54 +1,34 @@
 package kpk.dev.battleship.ui.activities;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 
-import java.util.Stack;
+import java.util.ArrayList;
+import java.util.List;
 
 import kpk.dev.battleship.R;
-import kpk.dev.battleship.commands.Receiver;
-import kpk.dev.battleship.states.BaseState;
 import kpk.dev.battleship.states.IntroState;
-import kpk.dev.battleship.ui.fragments.MainFragment;
+import kpk.dev.battleship.ui.navigation.ActionBarNavigationModel;
 
-public class MainActivity extends FragmentActivity implements Receiver {
+public class MainActivity extends ActionBarListActivity {
 
-    private BaseState mState;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        displayState(new IntroState(this));
+    protected List<ActionBarNavigationModel> getMainNavigationItems() {
+        final List<ActionBarNavigationModel> navModels = new ArrayList<ActionBarNavigationModel>();
+        for(int i = 0; i < 4; i++) {
+            ActionBarNavigationModel model  = new ActionBarNavigationModel("Nav model " + i, i, R.drawable.ic_launcher);
+            model.setState(new IntroState(this, null));
+            navModels.add(model);
+        }
+        return navModels;
     }
 
     @Override
-    public void onBackPressed() {
-        if(mState == null || mState.getPrevState() == null) {
-            super.onBackPressed();
-        }else{
-            displayState(mState.getPrevState());
-        }
-    }
-
-    private void displayState(BaseState state) {
-
-        final Fragment fr = state.getFragment();
-        if(fr != null){
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, fr, state.getFragmentTag()).commit();
-        }
-        if(mState != null){
-            state.setPrevState(mState);
-        }
-        mState = state;
+    protected int getContentView() {
+        return R.layout.activity_main;
     }
 
     @Override
-    public void changeState(BaseState state) {
-        displayState(state);
+    protected int getMainFragmentContainer() {
+        return R.id.container;
     }
 }

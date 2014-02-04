@@ -72,8 +72,8 @@ public class GameArea extends RelativeLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        if(changed){
-            if(mGrids.size() <= 0)
+        /*if(changed){
+            if(mGrids == null || mGrids.size() <= 0)
                 return;
 
             double width = r / ((double)2 + .4);
@@ -91,13 +91,12 @@ public class GameArea extends RelativeLayout {
             RelativeLayout.LayoutParams paramsLast = (RelativeLayout.LayoutParams)mGrids.get(mGrids.size() - 1).getLayoutParams();
             paramsLast.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             mGrids.get(mGrids.size() - 1).setLayoutParams(paramsLast);
-        }
+        }*/
     }
 
     private void init() {
         mGrids = new ArrayList<BattleshipGrid>();
-
-        for(int i = 0; i < 2; i++) {
+        for(int i = 0; i < GameData.getInstance().getPlayersNum(); i++) {
             GridData data = GameData.getInstance().getPlayers().get(i).getGridData();
             BattleshipGrid grid = new BattleshipGrid(getContext(), data);
             data.addObserver(grid);
